@@ -1,3 +1,7 @@
-﻿  Source.cpp
+﻿  ClientManager.cpp
+c:\users\pblanes\documents\github\xarxes_practicalobby\platilla_3projects\gameclient\clientmanager.cpp(34): warning C4101: 'bytesSend': unreferenced local variable
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  Source.cpp
   GameClient.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_PracticaLobby\Platilla_3Projects\x64\Debug\GameClient.exe
   GameClient.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_PracticaLobby\Platilla_3Projects\x64\Debug\GameClient.pdb (Partial PDB)

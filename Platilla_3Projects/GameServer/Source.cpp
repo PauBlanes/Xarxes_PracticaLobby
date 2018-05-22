@@ -2,11 +2,15 @@
 #include <iostream>
 #include <SFML\Graphics.hpp>
 #include <SFML\Network.hpp>
-#include <PlayerInfo.h>
+#include "ServerManager.h"
+#include <mysql_connection.h>
+#include <cppconn\driver.h>
+#include <cppconn\resultset.h>
+#include <cppconn\statement.h>
+#include <cppconn\exception.h>
 
 int main()
 {
 	
-	PlayerInfo playerInfo;
-	return 0;
+	ServerManager sM;
 }

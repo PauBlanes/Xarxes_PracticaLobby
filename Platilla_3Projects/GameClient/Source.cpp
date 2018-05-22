@@ -1,9 +1,8 @@
 #pragma once
-#include <PlayerInfo.h>
-#include <SFML\Network.hpp>
+#include "ClientManager.h"
 
 int main()
 {
-	PlayerInfo playerInfo;
-	return 0;
+	ClientManager cM;
+
 }
