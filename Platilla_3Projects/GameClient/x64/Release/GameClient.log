@@ -1,8 +1,10 @@
-﻿  Source.cpp
+﻿  ClientManager.cpp
+c:\users\pblan\documents\github\xarxes_practicalobby\platilla_3projects\gameclient\clientmanager.cpp(34): warning C4101: 'bytesSend': unreferenced local variable
+  Player.cpp
+  Source.cpp
   Generating code
-  29 of 29 functions (100.0%) were compiled, the rest were copied from previous compilation.
-    7 functions were new in current compilation
+  93 of 93 functions (100.0%) were compiled, the rest were copied from previous compilation.
+    68 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
-  GameClient.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_PracticaLobby\Platilla_3Projects\x64\Release\GameClient.exe
-  GameClient.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_PracticaLobby\Platilla_3Projects\x64\Release\GameClient.pdb (Full PDB)
+  GameClient.vcxproj -> C:\Users\pblan\Documents\GitHub\Xarxes_PracticaLobby\Platilla_3Projects\x64\Release\GameClient.exe
