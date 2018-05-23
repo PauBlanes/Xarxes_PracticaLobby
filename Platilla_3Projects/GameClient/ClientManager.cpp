@@ -16,14 +16,19 @@ ClientManager::ClientManager() {
 	else if (status == Socket::Done) {
 
 		//Enviem el nostre nom
-		cout << "Conected, Please type your nick..." << endl;
-	
-		//Preguntar nom
-		cin >> me.nick;
+		cout << "Conected, Are you a new player [Y/N]" << endl;
+		string isNew;
+		cin >> isNew;
+		if (isNew == "Y") {
+			cout << "REGISTER" << endl;
+			cout << "Username: ";
+			cin >> me.nick;
+			cout << "Password: ";
+			cin >> password;
+		}
 
 		//Enviar aquest nom pq el server el provi
-		SendCmd(&socket, TRYNICK);
-
+		SendCmd(&socket, REGISTER);
 	}	
 
 }
@@ -36,8 +41,10 @@ void ClientManager::SendCmd(TcpSocket* sock, COMMANDS cmd) {
 
 	switch (cmd)
 	{
-	case TRYNICK:
-		packet2Send << cmd << me.nick;
+	case REGISTER:
+		packet2Send << cmd << me.nick << password;
+		break;
+	case LOGIN:
 		break;
 	case STARTQUEUE:
 		break;
@@ -53,4 +60,5 @@ void ClientManager::SendCmd(TcpSocket* sock, COMMANDS cmd) {
 	{
 		status = sock->send(packet2Send);
 	} while (status == sf::Socket::Partial);
+	
 }

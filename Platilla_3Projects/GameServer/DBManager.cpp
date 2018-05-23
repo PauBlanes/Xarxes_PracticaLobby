@@ -37,7 +37,7 @@ bool DBManager::Register(string user, string password) {
 	}
 	return false;
 }
-bool DBManager::Login(string user, string password) {
+bool DBManager::Login(string user, string password, ClientProxy* player) {
 	
 	//Primer comprovem si tenim aquest user-psswrd a la db
 	string cmd = "SELECT idAccount FROM Accounts WHERE username=";
@@ -71,8 +71,9 @@ bool DBManager::Login(string user, string password) {
 		int idSess = rS->getInt(1);//agafem el primer valor
 		delete(rS);
 
-		//GUARDAR A UN PLAYER AQUESTS [IDACC,LVL I SESSION], ¿¿DE FET CREAR-LO DES D'AQUI I AFEGIRLO AL ARRAY DEL SERVERMANAGER??
-			//TO DO
+		//GUARDAR A UN PLAYER AQUESTS lvl i session || no el podem crear directament aqui pq al socket selctor ja volem tenirlo per escoltar si ens envia register o algo
+		player->sessionID = idSess;
+		player->skillLevel = playerLvl;
 
 		//Insertem a la taula de sessions una nova sessio amb el nostre id de jugador
 		cmd.clear();//no tinc clar que calgui fer això però per si de cas

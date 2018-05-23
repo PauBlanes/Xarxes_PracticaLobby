@@ -7,5 +7,5 @@
 
 int main()
 {
-	//ServerManager sM;
+	ServerManager sM;
 }

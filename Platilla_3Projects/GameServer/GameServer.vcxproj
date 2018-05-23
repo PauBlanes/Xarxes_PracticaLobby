@@ -164,6 +164,7 @@
   <ItemGroup>
     <ClInclude Include="ClientProxy.h" />
     <ClInclude Include="DBManager.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="ServerManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

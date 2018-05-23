@@ -18,7 +18,8 @@ ServerManager::ServerManager() {
 	// Add the listener to the selector
 	selector.add(listener);
 	// Endless loop that waits for new connections
-	while (true)
+	bool running = true;
+	while (running)
 	{
 		// Make the selector wait for data on any socket
 		if (selector.wait())
@@ -33,6 +34,10 @@ ServerManager::ServerManager() {
 					// Add the new client to the clients list
 					std::cout << "Llega el cliente con puerto: " << client->getRemotePort() << std::endl;
 
+					// Creem jugador amb info basica, si la base de dades no ens l'accepta el borrarem, pero es per posarnos a escoltar que mes ens envia
+					ClientProxy temp(client);
+					players_in_lobby.push_back(temp);
+
 					// Add the new client to the selector so that we will be notified when he sends something
 					selector.add(*client);
 				}
@@ -45,20 +50,20 @@ ServerManager::ServerManager() {
 			}
 			else
 			{
-				//Ning?s'ha intentat connectar, per tant fem la comunicacio amb els actuals			
-				/*for (int i = 0; i < players.size(); i++)
+				//Ningu s'ha intentat connectar, per tant fem la comunicacio amb els actuals			
+				for (int i = 0; i < players_in_lobby.size(); i++)
 				{
 					bool shouldErase = false;
-					TcpSocket& client = *(players[i].sock);
+					TcpSocket& client = *(players_in_lobby[i].socket);
 					if (selector.isReady(client))
 					{
 						// The client has sent some data, we can receive i												
 						string strRec;
 						Packet packet;
-						players[i].sock->receive(packet);
+						players_in_lobby[i].socket->receive(packet);
 						if (status == Socket::Done) //Aquesta funcio ja comprovara si estan tots
 						{
-							ComunicationManager(packet, &players[i]);
+							ReceiveComand(packet,i);
 
 						}
 						else if (status == Socket::Disconnected)
@@ -66,18 +71,13 @@ ServerManager::ServerManager() {
 							selector.remove(client);
 							shouldErase = true;
 							cout << "Elimino el socket con puerto : " << client.getRemotePort() << " que se ha desconectado" << endl;
-							SendAllPlayers("A client disconnected", &client);
-						}
-						else
-						{
-							if (players.size() == maxPlayers) //pq sino ens imprimeix error i simplement es que encara no volem rebre missatges
-								cout << "Error al recibir de " << client.getRemotePort() << endl;
+							//Enviar a tots que s'ha desconenctat?
 						}
 					}
 					//Si volem borrar elements de la llista hem de controlar que no ens sortim fora amb l'iterador
 					if (shouldErase)
-						players.erase(players.begin() + i);
-				}*/
+						players_in_lobby.erase(players_in_lobby.begin() + i);
+				}
 
 			}
 		}
@@ -85,11 +85,8 @@ ServerManager::ServerManager() {
 
 }
 
-bool ServerManager::CheckIfNew(string n) {
-	return true; //Fem que sempre sigui true per fer proves
-}
 
-void ServerManager::ReceiveComand(Packet receivedPacket) {
+void ServerManager::ReceiveComand(Packet receivedPacket, int playerIndex) {
 	
 	int cmdIndex;
 	receivedPacket >> cmdIndex;
@@ -97,24 +94,33 @@ void ServerManager::ReceiveComand(Packet receivedPacket) {
 
 	switch (cmd)
 	{
-	case TRYNICK:
+	case REGISTER:
 	{
+		cout << "Recibido intento de registro" << endl;
 		string nick2Try;
-		receivedPacket >> nick2Try;
-		if (CheckIfNew(nick2Try)) {
-			//Si no estava a la base de dades creem un player, pero si que necessitem quin és l'últim id de la base de dades
-			/*ClientProxy newClient(nick2Try, 0.0, 0, 0);
-			players.push_back(newClient);
-			cout << players.size() << endl;*/
-			//I l'afegim a la base de dades
-
-		}
-		else {
-			//Si ja és nou creem un nou jugador recuperant la info de la base de dades
-		}
-
+		string p2Try;
+		receivedPacket >> nick2Try >> p2Try;
+		
+		/*if (dbM.Register(nick2Try, p2Try)) {
+			cout << "Registered user : " << nick2Try << endl;
+			//Enviar al client OK_REGISTER
+		}*/
+		
 		break;
-	}		
+	}
+	case LOGIN:
+	{
+		cout << "Recibido intento de login" << endl;
+		string nick2Try;
+		string p2Try;
+		receivedPacket >> nick2Try >> p2Try;
+
+		/*if (dbM.Login(nick2Try, p2Try, &players_in_lobby[playerIndex])) {
+			cout << "Logged user: " << nick2Try << endl;
+			//Enviar al client OK_LOGIN
+		}*/
+	}
+		break;
 	case STARTQUEUE:
 		break;
 	case ENDGAME:
@@ -122,4 +128,12 @@ void ServerManager::ReceiveComand(Packet receivedPacket) {
 	default:
 		break;
 	}
+}
+
+int ServerManager::FindClient(TcpSocket* sock) {
+	for (int i = 0; i < players_in_lobby.size(); i++) {
+		if (sock == players_in_lobby[i].socket)
+			return i;
+	}
+	return -1;//com a control derrors cutre
 }

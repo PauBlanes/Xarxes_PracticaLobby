@@ -7,18 +7,14 @@ using namespace sf;
 
 class ClientProxy {
 public:
-	ClientProxy(TcpSocket* sock);
-	//ClientProxy);
+	ClientProxy(TcpSocket*);
+	//ClientProxy();
 
-	//Info general
-	int id;
-	string nick;
+	//Info de la conta
+	int sessionID;
+	string username;
+	string password;
 	float skillLevel;
-	int numConnections;
-	int gamesPlayed;
-
-	//Bases de datos
-	void SetValues(string, float, int, int);
 
 	//Info conexio
 	TcpSocket* socket;

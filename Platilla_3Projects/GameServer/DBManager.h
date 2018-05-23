@@ -4,6 +4,7 @@
 #include <cppconn\resultset.h>
 #include <cppconn\statement.h>
 #include <cppconn\exception.h>
+#include "ClientProxy.h"
 
 #define DB_IP "tcp://localhost:3306"
 #define DB_USER "root"
@@ -19,7 +20,7 @@ public:
 	 DBManager();
 	~DBManager();
 	bool Register(string, string);
-	bool Login(string, string);
-	void AddMatch(int);
+	bool Login(string, string, ClientProxy*); //afegim un index de l'array de jugadors per poder setejar-li les dades
+    void AddMatch(int);
 	void CloseSession(int);
 };

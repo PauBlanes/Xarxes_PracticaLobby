@@ -12,6 +12,7 @@ public:
 	
 	ClientManager();
 	void SendCmd(TcpSocket*, COMMANDS);
-
+	
+	string password;//nomes volem el nostre
 	Player me;
 };
