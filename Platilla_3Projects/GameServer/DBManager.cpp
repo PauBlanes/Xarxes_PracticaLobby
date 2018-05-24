@@ -3,7 +3,7 @@
 DBManager::DBManager() {
 	
 	driver = get_driver_instance();
-	con = driver->connect(DB_IP, DB_USER, DB_PSSWRD);
+	con = driver->connect(DB_IP, "root", "1234"); 
 	stmt = con->createStatement();
 	stmt->execute("USE gamedb");
 }
@@ -18,20 +18,20 @@ bool DBManager::Register(string user, string password) {
 	
 	//Primer buscar si hi ha algun que coincideixi
 	string cmd = "SELECT COUNT(*) FROM Accounts WHERE username=";
-	cmd += "\'" +user+ "\'";
+	cmd += "'" +user+ "'";
 	sql::ResultSet* rS = stmt->executeQuery(cmd.c_str());
 	
 	rS->next();
 	int count = rS->getInt(1);//agafem el primer valor
 	delete(rS);
-
+	
 	//si no estava repetit l'usuari afegim, sino sortim
 	if (count == 0) {
 		
 		cmd.clear();//no tinc clar que calgui fer això però per si de cas
-		cmd = "INSERT INTO Accounts(username, userpasword) VALUES(";
-		cmd = cmd + "\'" + user + "\'," + "\'" + password + "\')";
-		stmt->execute(cmd.c_str());
+		cmd = "INSERT into Accounts(username, userpassword) VALUES(";
+		cmd += "'" + user + "'," + "'" + password + "')";		
+		stmt->execute(cmd.c_str());		
 
 		return true;
 	}

@@ -14,6 +14,7 @@ class ServerManager {
 public:	
 	ServerManager();
 	void ReceiveComand(Packet, int);
-	//DBManager dbM;
+	void SendComand(COMMANDS, TcpSocket*);
+	DBManager dbM;
 	int FindClient(TcpSocket*); //devuelve el indice con este user+password
 };

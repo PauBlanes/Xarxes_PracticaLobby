@@ -64,7 +64,6 @@ ServerManager::ServerManager() {
 						if (status == Socket::Done) //Aquesta funcio ja comprovara si estan tots
 						{
 							ReceiveComand(packet,i);
-
 						}
 						else if (status == Socket::Disconnected)
 						{
@@ -101,13 +100,15 @@ void ServerManager::ReceiveComand(Packet receivedPacket, int playerIndex) {
 		string p2Try;
 		receivedPacket >> nick2Try >> p2Try;
 		
-		/*if (dbM.Register(nick2Try, p2Try)) {
-			cout << "Registered user : " << nick2Try << endl;
-			//Enviar al client OK_REGISTER
-		}*/
-		
-		break;
+		if (dbM.Register(nick2Try, p2Try)) {
+			cout << "New user : " << nick2Try << endl;
+			SendComand(OK_REGISTER, players_in_lobby[playerIndex].socket);
+		}
+		else {
+			cout << nick2Try << " is not new" << endl;
+		}	
 	}
+	break;
 	case LOGIN:
 	{
 		cout << "Recibido intento de login" << endl;
@@ -115,12 +116,15 @@ void ServerManager::ReceiveComand(Packet receivedPacket, int playerIndex) {
 		string p2Try;
 		receivedPacket >> nick2Try >> p2Try;
 
-		/*if (dbM.Login(nick2Try, p2Try, &players_in_lobby[playerIndex])) {
+		if (dbM.Login(nick2Try, p2Try, &players_in_lobby[playerIndex])) {
 			cout << "Logged user: " << nick2Try << endl;
-			//Enviar al client OK_LOGIN
-		}*/
+			SendComand(OK_LOGIN, players_in_lobby[playerIndex].socket);
+		}
+		else {
+			cout << "falied to log : " << nick2Try << endl;
+		}	
 	}
-		break;
+	break;
 	case STARTQUEUE:
 		break;
 	case ENDGAME:
@@ -130,10 +134,24 @@ void ServerManager::ReceiveComand(Packet receivedPacket, int playerIndex) {
 	}
 }
 
-int ServerManager::FindClient(TcpSocket* sock) {
-	for (int i = 0; i < players_in_lobby.size(); i++) {
-		if (sock == players_in_lobby[i].socket)
-			return i;
+void ServerManager::SendComand(COMMANDS cmd, TcpSocket* sock) {
+	Socket::Status status;
+	size_t bytesSend;
+	Packet packet2Send;
+	packet2Send << cmd;
+
+	switch (cmd)
+	{
+	case OK_REGISTER:
+		break;
+	case OK_LOGIN:
+		break;
+	default:
+		break;
 	}
-	return -1;//com a control derrors cutre
+
+	do
+	{
+		status = sock->send(packet2Send);
+	} while (status == sf::Socket::Partial);
 }
