@@ -19,7 +19,7 @@ class DBManager {
 public:
 	 DBManager();
 	~DBManager();
-	bool Register(string, string);
+	bool Register(string, string, string);
 	bool Login(string, string, ClientProxy*); //afegim un index de l'array de jugadors per poder setejar-li les dades
     void AddMatch(int);
 	void CloseSession(ClientProxy);

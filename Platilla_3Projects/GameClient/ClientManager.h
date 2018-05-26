@@ -19,6 +19,10 @@ public:
 
 	TcpSocket mySocket;	
 	string password;//nomes volem el nostre
+	//////////////////////////////
+	string email;
+	//////////////////////////////
+
 	Player me;
 	vector<string> others; //nomes volem els nicks de fet
 };

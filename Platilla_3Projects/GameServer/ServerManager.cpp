@@ -116,9 +116,15 @@ void ServerManager::ReceiveComand(Packet receivedPacket, int playerIndex) {
 		cout << "Recibido intento de registro" << endl;
 		string nick2Try;
 		string p2Try;
-		receivedPacket >> nick2Try >> p2Try;
-		
-		if (dbM.Register(nick2Try, p2Try)) {
+		//////////////////////
+		string e2Try;
+		//////////////////////
+
+		//receivedPacket >> nick2Try >> p2Try;
+		receivedPacket >> nick2Try >> p2Try >> e2Try;
+
+		//if (dbM.Register(nick2Try, p2Try)) {
+		if (dbM.Register(nick2Try, p2Try, e2Try)) {
 			cout << "New user : " << nick2Try << endl;
 			SendComand(OK_REGISTER, players_in_lobby[playerIndex].socket);
 		}

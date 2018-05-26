@@ -37,7 +37,8 @@ void ClientManager::SendCmd(TcpSocket* sock, COMMANDS cmd) {
 	switch (cmd)
 	{
 	case REGISTER:
-		 packet2Send << cmd << me.nick << password;
+		 //packet2Send << cmd << me.nick << password;
+		packet2Send << cmd << me.nick << password << email;
 		break;
 	case LOGIN:
 		packet2Send << cmd << me.nick << password;
@@ -115,6 +116,11 @@ void ClientManager::Asker(states state) {
 			cin >> me.nick;
 			cout << "Password: ";
 			cin >> password;
+			
+			//////////////////////
+			cout << "Email: ";
+			cin >> email;
+			//////////////////////
 
 			//Enviar aquest nom pq el server el provi
 			SendCmd(&mySocket, REGISTER);
