@@ -13,7 +13,7 @@ ClientManager::ClientManager() {
 		//exit(0);
 	}
 	else if (status == Socket::Done) {
-		AskRegister();		
+		Asker(ASKREGISTER);		
 	}
 
 	while (true) {
@@ -33,19 +33,17 @@ void ClientManager::SendCmd(TcpSocket* sock, COMMANDS cmd) {
 	Socket::Status status;
 	size_t bytesSend;
 	Packet packet2Send;
-	packet2Send << cmd;
 
 	switch (cmd)
 	{
 	case REGISTER:
-		 packet2Send << me.nick << password;
+		 packet2Send << cmd << me.nick << password;
 		break;
 	case LOGIN:
-		packet2Send << me.nick << password;
+		packet2Send << cmd << me.nick << password;
 		break;
 	case STARTQUEUE:
-		break;
-	case STARTGAME:
+		packet2Send << cmd;
 		break;
 	case ENDGAME:
 		break;
@@ -69,48 +67,100 @@ void ClientManager::ReceiveComand(Packet receivedPacket) {
 	switch (cmd)
 	{
 	case OK_REGISTER:
-		AskLogin();
+		Asker(ASKLOGIN);
 		break;
 	case OK_LOGIN:
-		//cout << "YOU ARE NOW IN LOBBY" << endl;
+		Asker(ASKFINDMATCH);
 		break;
+	case STARTGAME:
+		cout << "MATCH FOUND!" << endl;
+		//agafar nick dels altres per poder-lo imprimir per pantalla
+		int numOthers;
+		receivedPacket >> numOthers;
+		cout << "You are in a game with: " << endl;
+		for (int i = 0; i < numOthers; i++) {
+			string newNick;
+			receivedPacket >> newNick;
+			if (newNick != me.nick) {
+				others.push_back(newNick);
+				cout << newNick << endl;
+			}
+		}
+		break;
+	case ENDGAME:
+	{
+		others.clear();
+		cout << "GAME ENDED" << endl;
+		Asker(ASKFINDMATCH);
+	}
+	break;
 	default:
 		break;
 	}
 }
 
-void ClientManager::AskRegister() {
-	//Enviem el nostre nom
-	cout << "Welcome, Are you a new player [Y/N]" << endl;
-	string isNew;
-	cin >> isNew;
-	if (isNew == "Y") {
-		cout << "REGISTER" << endl;
+void ClientManager::Asker(states state) {
+	
+	switch (state)
+	{
+	case ASKREGISTER:
+	{
+		//Enviem el nostre nom
+		cout << "Welcome, Are you a new player [Y/N]" << endl;
+		string isNew;
+		cin >> isNew;
+		if (isNew == "Y") {
+			cout << "REGISTER" << endl;
+			cout << "Username: ";
+			cin >> me.nick;
+			cout << "Password: ";
+			cin >> password;
+
+			//Enviar aquest nom pq el server el provi
+			SendCmd(&mySocket, REGISTER);
+		}
+		else if (isNew == "N") {
+			Asker(ASKLOGIN);
+		}
+		else {
+			cout << "Wrong answer" << endl;
+			Asker(ASKREGISTER);
+		}
+	}
+		break;
+	case ASKLOGIN:
+	{
+		//Enviem el nostre nom
+		cout << "LOGIN" << endl;
+
 		cout << "Username: ";
 		cin >> me.nick;
 		cout << "Password: ";
 		cin >> password;
 
-		//Enviar aquest nom pq el server el provi
-		SendCmd(&mySocket, REGISTER);
+		SendCmd(&mySocket, LOGIN);
 	}
-	else if (isNew == "N") {
-		AskLogin();
+		break;
+	case ASKFINDMATCH:
+	{
+		cout << "WELCOME TO THE LOBBY" << endl;
+		cout << "FIND MATCH? [Y]" << endl;
+		string answer;
+		cin >> answer;
+		if (answer == "Y"){
+			//Enviar al server QUEUE
+		}
+		else {
+			cout << "Wrong answer" << endl;
+			Asker(ASKFINDMATCH);
+		}
 	}
-	else {
-		cout << "Wrong answer" << endl;
-		AskRegister();
-	}	
-}
+		break;
+	default:
+		break;
+	}
 
-void ClientManager::AskLogin() {
-	//Enviem el nostre nom
-	cout << "LOGIN" << endl;
 	
-	cout << "Username: ";
-	cin >> me.nick;
-	cout << "Password: ";
-	cin >> password;
-
-	SendCmd(&mySocket, LOGIN);	
 }
+
+

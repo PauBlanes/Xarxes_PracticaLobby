@@ -6,6 +6,6 @@
 
 
 int main()
-{
+{	
 	ServerManager sM;
 }

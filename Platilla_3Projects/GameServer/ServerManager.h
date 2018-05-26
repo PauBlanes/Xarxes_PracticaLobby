@@ -8,13 +8,20 @@
 
 using namespace std;
 
+#define MAX_PLAYERS 4 //minim es 2
+#define TRYMATCH_TIME 500
+
 class ServerManager {
 	vector<ClientProxy> players_in_lobby;
+	
+	vector<ClientProxy> players_in_queue;
 	vector<Game> matches;
+	Clock tryMatchClock;
+
 public:	
 	ServerManager();
 	void ReceiveComand(Packet, int);
 	void SendComand(COMMANDS, TcpSocket*);
 	DBManager dbM;
-	int FindClient(TcpSocket*); //devuelve el indice con este user+password
+	void TryFindMatch(); //Cada X temps intentem fer aquesta funcio si hi ha minim 2 jugadors a la cua
 };

@@ -7,16 +7,18 @@
 using namespace sf;
 using namespace std;
 
+enum states {ASKREGISTER, ASKLOGIN, ASKFINDMATCH};
 class ClientManager {
 public:
 	
 	ClientManager();
 	void SendCmd(TcpSocket*, COMMANDS);
 	void ReceiveComand(Packet);
-	void AskRegister();
-	void AskLogin();
+	void Asker(states);
+	//void AskLogin();
 
 	TcpSocket mySocket;	
 	string password;//nomes volem el nostre
 	Player me;
+	vector<string> others; //nomes volem els nicks de fet
 };

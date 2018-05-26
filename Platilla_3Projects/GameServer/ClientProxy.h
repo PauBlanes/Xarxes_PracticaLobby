@@ -13,8 +13,8 @@ public:
 	//Info de la conta
 	int sessionID;
 	string username;
-	string password;
-	float skillLevel;
+	int skillLevel;
+	int accountID;
 
 	//Info conexio
 	TcpSocket* socket;

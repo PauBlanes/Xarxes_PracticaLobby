@@ -80,6 +80,24 @@ ServerManager::ServerManager() {
 
 			}
 		}
+
+		//Cada X segons intentem fer una partida si hi ha mes de 1 jugador en cua
+		Time currTime = tryMatchClock.getElapsedTime();
+		if (currTime.asMilliseconds() > TRYMATCH_TIME) {
+
+			if (players_in_queue.size() > 1) {
+				TryFindMatch();
+			}
+			tryMatchClock.restart();
+		}
+
+		//Actualitzem partides actives
+		for (int i = 0; i < matches.size(); i++) {
+			matches[i].Update();
+			if (matches[i].gameEnded)
+				matches.erase(matches.begin()+i);
+		}
+		
 	}
 
 }
@@ -126,6 +144,13 @@ void ServerManager::ReceiveComand(Packet receivedPacket, int playerIndex) {
 	}
 	break;
 	case STARTQUEUE:
+	{
+		//Posarlo al array de in queue
+		ClientProxy temp = players_in_lobby[playerIndex];
+		players_in_queue.push_back(temp);
+		if (players_in_queue.size() == 2) //aixo pq no els hi trobi match inmediat si ja havia estat contant temps mentre nomes hi havia 1 jugador
+			tryMatchClock.restart();
+	}
 		break;
 	case ENDGAME:
 		break;
@@ -154,4 +179,29 @@ void ServerManager::SendComand(COMMANDS cmd, TcpSocket* sock) {
 	{
 		status = sock->send(packet2Send);
 	} while (status == sf::Socket::Partial);
+}
+
+void ServerManager::TryFindMatch() {
+	vector<ClientProxy> possible;
+	bool full = false;
+	//Triem un jugador aleatori per provar-li de fer match
+	int rnd = rand() % players_in_queue.size();
+	possible.push_back(players_in_queue[rnd]);
+
+	for (int i = 0; i < players_in_queue.size() && !full; i++) {
+		if (i != rnd && abs(players_in_queue[i].skillLevel - possible[0].skillLevel) < 1) {
+			possible.push_back(players_in_queue[i]);
+			if (possible.size() >= MAX_PLAYERS)
+				full = true;
+		}
+	}
+
+	if (possible.size() > 1) { //si hem pogut crear partida l'afegim al array de partides
+		Game temp(possible); //la mateixa partida ja envia start game a tots i els nicks
+		matches.push_back(temp);
+	}
+	else {
+		cout << "No s'ha pogut trobar partida" << endl;
+	}
+	
 }

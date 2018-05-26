@@ -158,6 +158,7 @@
   <ItemGroup>
     <ClCompile Include="ClientProxy.cpp" />
     <ClCompile Include="DBManager.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="ServerManager.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
