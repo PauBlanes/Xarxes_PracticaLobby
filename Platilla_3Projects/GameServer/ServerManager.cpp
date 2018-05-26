@@ -1,4 +1,4 @@
-#include "ServerManager.h"
+﻿#include "ServerManager.h"
 
 ServerManager::ServerManager() {
 
@@ -84,8 +84,9 @@ ServerManager::ServerManager() {
 		//Cada X segons intentem fer una partida si hi ha mes de 1 jugador en cua
 		Time currTime = tryMatchClock.getElapsedTime();
 		if (currTime.asMilliseconds() > TRYMATCH_TIME) {
-
+		
 			if (players_in_queue.size() > 1) {
+				
 				TryFindMatch();
 			}
 			tryMatchClock.restart();
@@ -143,6 +144,7 @@ void ServerManager::ReceiveComand(Packet receivedPacket, int playerIndex) {
 		if (dbM.Login(nick2Try, p2Try, &players_in_lobby[playerIndex])) {
 			cout << "Logged user: " << nick2Try << endl;
 			SendComand(OK_LOGIN, players_in_lobby[playerIndex].socket);
+
 		}
 		else {
 			cout << "falied to log : " << nick2Try << endl;
@@ -151,9 +153,11 @@ void ServerManager::ReceiveComand(Packet receivedPacket, int playerIndex) {
 	break;
 	case STARTQUEUE:
 	{
+		
 		//Posarlo al array de in queue
 		ClientProxy temp = players_in_lobby[playerIndex];
 		players_in_queue.push_back(temp);
+		cout << players_in_queue.size() << endl;
 		if (players_in_queue.size() == 2) //aixo pq no els hi trobi match inmediat si ja havia estat contant temps mentre nomes hi havia 1 jugador
 			tryMatchClock.restart();
 	}

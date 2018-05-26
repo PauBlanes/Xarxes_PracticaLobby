@@ -155,6 +155,7 @@ void ClientManager::Asker(states state) {
 		cin >> answer;
 		if (answer == "Y"){
 			//Enviar al server QUEUE
+			SendCmd(&mySocket, STARTQUEUE);
 		}
 		else {
 			cout << "Wrong answer" << endl;
