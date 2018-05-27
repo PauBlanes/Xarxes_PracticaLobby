@@ -136,6 +136,7 @@ void ServerManager::ReceiveComand(Packet receivedPacket, int playerIndex) {
 		}
 		else {
 			cout << nick2Try << " is not new" << endl;
+			SendComand(FAIL_REGISTER, players_in_lobby[playerIndex].socket);
 		}	
 	}
 	break;
@@ -149,10 +150,10 @@ void ServerManager::ReceiveComand(Packet receivedPacket, int playerIndex) {
 		if (dbM.Login(nick2Try, p2Try, &players_in_lobby[playerIndex])) {
 			cout << "Logged user: " << nick2Try << endl;
 			SendComand(OK_LOGIN, players_in_lobby[playerIndex].socket);
-			cout <<"USERNAME: "<< players_in_lobby[playerIndex].username<<endl;
 		}
 		else {
 			cout << "falied to log : " << nick2Try << endl;
+			SendComand(FAIL_LOGIN, players_in_lobby[playerIndex].socket);
 		}	
 	}
 	break;
@@ -166,7 +167,7 @@ void ServerManager::ReceiveComand(Packet receivedPacket, int playerIndex) {
 		//	tryMatchClock.restart();
 	}
 		break;
-	/*case ENDGAME: {
+	/*case ENDGAME: { //esto no puede ir aqui es el server quin envia endgame no el cliente
 		bool win;
 		receivedPacket >> win;
 		if (win) {
@@ -200,7 +201,12 @@ void ServerManager::SendComand(COMMANDS cmd, TcpSocket* sock) {
 		}
 	}
 	break;
-
+	case FAIL_REGISTER:
+		packet2Send << cmd;
+		break;
+	case FAIL_LOGIN:
+		packet2Send << cmd;
+		break;
 	default:
 		break;
 	}
@@ -248,7 +254,6 @@ void ServerManager::MyThread() {
 		if (currTime.asMilliseconds() > TRYMATCH_TIME) {
 
 			if (players_in_queue.size() > 1) {
-
 				TryFindMatch();
 			}
 			tryMatchClock.restart();

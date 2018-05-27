@@ -7,6 +7,8 @@
 using namespace sf;
 using namespace std;
 
+#define GAME_DURATION 5000;
+
 enum states {ASKREGISTER, ASKLOGIN, ASKFINDMATCH};
 class ClientManager {
 public:
@@ -25,4 +27,6 @@ public:
 
 	Player me;
 	vector<string> others; //nomes volem els nicks de fet
+	bool ingame;
+	Clock ingameClock;
 };

@@ -23,6 +23,11 @@ ClientManager::ClientManager() {
 		{
 			ReceiveComand(packet);
 		}
+
+		if (ingame) {
+			Time currTime = ingameClock.getElapsedTime();
+			cout << currTime.asSeconds() << endl;
+		}
 		
 	}
 
@@ -88,20 +93,27 @@ void ClientManager::ReceiveComand(Packet receivedPacket) {
 				cout << newNick << endl;
 			}
 		}
+		ingame = true;
+		ingameClock.restart();
 	}
 		break;
 	case ENDGAME:
 	{
 		others.clear();
 		cout << "GAME ENDED" << endl;
-
-		/////////////UPDATE LEVEL////////////////
 		
-		/////////////////////////////
-
+		ingame = false;
 
 		Asker(ASKFINDMATCH);
 	}
+	case FAIL_REGISTER:
+		cout << "fail register" << endl;
+		Asker(ASKREGISTER);
+		break;
+	case FAIL_LOGIN:
+		cout << "fail login" << endl;
+		Asker(ASKLOGIN);
+		break;
 	break;
 	default:
 		break;
