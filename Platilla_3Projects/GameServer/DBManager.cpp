@@ -113,9 +113,12 @@ void DBManager::AddMatch(int idSession) {
 void DBManager::CloseSession(ClientProxy p) {
 	
 	string cmd = "UPDATE Sessions SET end = current_timestamp WHERE idSession =" + to_string(p.sessionID); 
-	stmt->execute(cmd.c_str());
+	stmt->execute(cmd.c_str());	
+}
 
-	cmd.clear();
-	cmd = "UPDATE Accounts SET level = " + to_string(p.skillLevel) +  " WHERE idAccount =" + to_string(p.accountID); 
+void DBManager::EndMatch(ClientProxy p) {
+	string cmd = "UPDATE Accounts SET level = " + to_string(p.skillLevel) + " WHERE idAccount =" + to_string(p.accountID);
 	stmt->execute(cmd.c_str());
 }
+
+

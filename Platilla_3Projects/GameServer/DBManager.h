@@ -23,4 +23,5 @@ public:
 	bool Login(string, string, ClientProxy*); //afegim un index de l'array de jugadors per poder setejar-li les dades
     void AddMatch(int);
 	void CloseSession(ClientProxy);
+	void EndMatch(ClientProxy);
 };

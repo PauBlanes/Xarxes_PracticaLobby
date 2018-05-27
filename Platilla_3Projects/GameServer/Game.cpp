@@ -37,9 +37,11 @@ void Game::Update() {
 		size_t bytesSend;
 		Packet packet2Send;
 		packet2Send << COMMANDS::ENDGAME;
+		
 		for (int i = 0; i < players.size(); i++) {
 			players[i].skillLevel += 3; //com que no hi ha guanyar/perdre de fet aixo seria com experiencia
-			dbManager.CloseSession(players[i]);
+			dbManager.EndMatch(players[i]);
+			
 			do
 			{
 				status = players[i].socket->send(packet2Send);

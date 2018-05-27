@@ -67,17 +67,17 @@ ServerManager::ServerManager() {
 						{
 							ReceiveComand(packet,i);
 						}
-						else if (status == Socket::Disconnected)
-						{
+						else if (status == Socket::Disconnected) 
+						{							
 							selector.remove(client);
-							shouldErase = true;
-							cout << "Elimino el socket con puerto : " << client.getRemotePort() << " que se ha desconectado" << endl;
-							//Enviar a tots que s'ha desconenctat?
+							
+							cout << "Elimino el socket con puerto : " << client.getRemotePort() << " que se ha desconectado" << endl;							
+							dbM.CloseSession(players_in_lobby[i]); //esto si lo llamamos cuando termina la partida se hace bien, es culpa de la desconexion
+							players_in_lobby.erase(players_in_lobby.begin() + i);
+							
 						}
 					}
-					//Si volem borrar elements de la llista hem de controlar que no ens sortim fora amb l'iterador
-					if (shouldErase)
-						players_in_lobby.erase(players_in_lobby.begin() + i);
+				
 				}
 				
 
