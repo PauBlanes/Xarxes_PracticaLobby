@@ -64,6 +64,12 @@ bool DBManager::Login(string user, string password, ClientProxy* player) {
 		if (rS->next()) {
 			playerLvl = rS->getInt(1);
 		}
+		
+		//Insertem a la taula de sessions una nova sessio amb el nostre id de jugador
+		cmd.clear();//no tinc clar que calgui fer aix?per?per si de cas
+		cmd = "INSERT INTO Sessions(idAccount) VALUES(";
+		cmd = cmd + to_string(idAcc) + ")";
+		stmt->execute(cmd.c_str());
 
 		//fem un altre select per obtenir un idSession
 		cmd.clear();//no tinc clar que calgui fer aix?per?per si de cas
@@ -91,11 +97,7 @@ bool DBManager::Login(string user, string password, ClientProxy* player) {
 		player->username = nick;
 		player->accountID = idAcc;
 
-		//Insertem a la taula de sessions una nova sessio amb el nostre id de jugador
-		cmd.clear();//no tinc clar que calgui fer aix?per?per si de cas
-		cmd = "INSERT INTO Sessions(idAccount) VALUES(";
-		cmd = cmd + to_string(idAcc) + ")";
-		stmt->execute(cmd.c_str());
+		
 
 		return true;
 	}

@@ -6,8 +6,9 @@ Game::Game(vector<ClientProxy>p) {
 	Socket::Status status;
 	size_t bytesSend;
 	Packet packet2Send;
-	packet2Send << COMMANDS::STARTGAME;
-	packet2Send << players.size();
+	packet2Send << 3;//COMMANDS::STARTGAME;
+	int size= players.size();
+	packet2Send << size;
 	//Afegim tots els noms i actualitzem base de dades
 	for (int i = 0; i < players.size(); i++) {
 		packet2Send << players[i].username;
@@ -26,7 +27,9 @@ void Game::Update() {
 
 	//Actualitzar temportizador
 	Time currTime = gameClock.getElapsedTime();
+	cout << currTime.asSeconds() << endl;
 	if (currTime.asMilliseconds() > GAME_TIME ) {
+		cout << currTime.asSeconds();
 		//Quan s'ha acabat enviem comando fin i actualitzem base de dades
 		cout << "END OF GAME" << endl;
 		gameEnded = true;//pq el serverManager el pugui treure del array

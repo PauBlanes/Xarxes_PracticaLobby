@@ -74,9 +74,9 @@ void ClientManager::ReceiveComand(Packet receivedPacket) {
 		Asker(ASKFINDMATCH);
 		break;
 	case STARTGAME:
-		cout << "MATCH FOUND!" << endl;
+	{	cout << "MATCH FOUND!" << endl;
 		//agafar nick dels altres per poder-lo imprimir per pantalla
-		int numOthers;
+		int numOthers=0;
 		receivedPacket >> numOthers;
 		cout << numOthers << endl;
 		cout << "You are in a game with: " << endl;
@@ -88,7 +88,7 @@ void ClientManager::ReceiveComand(Packet receivedPacket) {
 				cout << newNick << endl;
 			}
 		}
-		
+	}
 		break;
 	case ENDGAME:
 	{

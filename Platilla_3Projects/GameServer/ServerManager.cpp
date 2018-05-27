@@ -19,6 +19,7 @@ ServerManager::ServerManager() {
 	selector.add(listener);
 	// Endless loop that waits for new connections
 	bool running = true;
+	//this->CreateThread();
 	while (running)
 	{
 		// Make the selector wait for data on any socket
@@ -47,9 +48,29 @@ ServerManager::ServerManager() {
 					cout << "Error al recoger conexion nueva\n";
 					delete client;
 				}
+				cout << matches.size() << endl;
+
 			}
 			else
 			{
+				//Cada X segons intentem fer una partida si hi ha mes de 1 jugador en cua
+				Time currTime = tryMatchClock.getElapsedTime();
+				if (currTime.asMilliseconds() > TRYMATCH_TIME) {
+
+					if (players_in_queue.size() > 1) {
+
+						TryFindMatch();
+					}
+					tryMatchClock.restart();
+				}
+
+				//Actualitzem partides actives
+				for (int i = 0; i < matches.size(); i++) {
+					this->matches[i].Update();
+					if (matches[i].gameEnded) {
+						matches.erase(matches.begin() + i);
+					}
+				}
 				//Ningu s'ha intentat connectar, per tant fem la comunicacio amb els actuals			
 				for (int i = 0; i < players_in_lobby.size(); i++)
 				{
@@ -77,10 +98,12 @@ ServerManager::ServerManager() {
 					if (shouldErase)
 						players_in_lobby.erase(players_in_lobby.begin() + i);
 				}
+				
 
 			}
 		}
-
+		
+		/*
 		//Cada X segons intentem fer una partida si hi ha mes de 1 jugador en cua
 		Time currTime = tryMatchClock.getElapsedTime();
 		if (currTime.asMilliseconds() > TRYMATCH_TIME) {
@@ -91,16 +114,17 @@ ServerManager::ServerManager() {
 			}
 			tryMatchClock.restart();
 		}
-
+		
 		//Actualitzem partides actives
 		for (int i = 0; i < matches.size(); i++) {
-			matches[i].Update();
-			if (matches[i].gameEnded)
-				matches.erase(matches.begin()+i);
+			this->matches[i].Update();
+			if (matches[i].gameEnded) {
+				matches.erase(matches.begin() + i);
+			}
 		}
 		
+		*/
 	}
-
 }
 
 
@@ -144,7 +168,7 @@ void ServerManager::ReceiveComand(Packet receivedPacket, int playerIndex) {
 		if (dbM.Login(nick2Try, p2Try, &players_in_lobby[playerIndex])) {
 			cout << "Logged user: " << nick2Try << endl;
 			SendComand(OK_LOGIN, players_in_lobby[playerIndex].socket);
-
+			cout <<"USERNAME: "<< players_in_lobby[playerIndex].username<<endl;
 		}
 		else {
 			cout << "falied to log : " << nick2Try << endl;
@@ -215,9 +239,12 @@ void ServerManager::TryFindMatch() {
 	int rnd = rand() % players_in_queue.size();
 	possible.push_back(players_in_queue[rnd]);
 
+	
+
 	for (int i = 0; i < players_in_queue.size() && !full; i++) {
 		if (i != rnd && abs(players_in_queue[i].skillLevel - possible[0].skillLevel) < 1) {
 			possible.push_back(players_in_queue[i]);
+			players_in_queue.erase(players_in_queue.begin() + 1);
 			if (possible.size() >= MAX_PLAYERS)
 				full = true;
 		}
@@ -229,6 +256,39 @@ void ServerManager::TryFindMatch() {
 	}
 	else {
 		cout << "No s'ha pogut trobar partida" << endl;
+		players_in_queue.push_back(possible[0]);
 	}
 	
 }
+/*
+void ServerManager::MyThread(bool running) {
+	while (running)
+	{
+		//Cada X segons intentem fer una partida si hi ha mes de 1 jugador en cua
+		Time currTime = tryMatchClock.getElapsedTime();
+		if (currTime.asMilliseconds() > TRYMATCH_TIME) {
+
+			if (players_in_queue.size() > 1) {
+
+				TryFindMatch();
+			}
+			tryMatchClock.restart();
+		}
+
+		//Actualitzem partides actives
+		for (int i = 0; i < matches.size(); i++) {
+			this->matches[i].Update();
+			if (matches[i].gameEnded) {
+				matches.erase(matches.begin() + i);
+			}
+		}	
+	}
+
+	for (auto& t : some_threads) t.join();
+}
+
+void ServerManager::CreateThread() {
+
+	some_threads.push_back(thread(&ServerManager::MyThread,this));
+}
+*/
