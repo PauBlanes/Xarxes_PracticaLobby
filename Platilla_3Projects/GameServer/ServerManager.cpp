@@ -158,11 +158,18 @@ void ServerManager::ReceiveComand(Packet receivedPacket, int playerIndex) {
 		ClientProxy temp = players_in_lobby[playerIndex];
 		players_in_queue.push_back(temp);
 		cout << players_in_queue.size() << endl;
-		if (players_in_queue.size() == 2) //aixo pq no els hi trobi match inmediat si ja havia estat contant temps mentre nomes hi havia 1 jugador
-			tryMatchClock.restart();
+		//if (players_in_queue.size() == 2) //aixo pq no els hi trobi match inmediat si ja havia estat contant temps mentre nomes hi havia 1 jugador
+		//	tryMatchClock.restart();
 	}
 		break;
-	case ENDGAME:
+	case ENDGAME: {
+		bool win;
+		receivedPacket >> win;
+		if (win) {
+			players_in_lobby[playerIndex].skillLevel++;
+			win = false;
+		}
+	}
 		break;
 	default:
 		break;
@@ -181,6 +188,16 @@ void ServerManager::SendComand(COMMANDS cmd, TcpSocket* sock) {
 		break;
 	case OK_LOGIN:
 		break;
+
+	case STARTGAME: {
+		int numOther= players_in_lobby.size();
+		for (int i = 0; i < numOther;i++) {
+			packet2Send << cmd << players_in_lobby.size() << players_in_lobby[i].username;
+			cout << players_in_lobby[i].username << endl;
+		}
+	}
+	break;
+
 	default:
 		break;
 	}

@@ -78,6 +78,7 @@ void ClientManager::ReceiveComand(Packet receivedPacket) {
 		//agafar nick dels altres per poder-lo imprimir per pantalla
 		int numOthers;
 		receivedPacket >> numOthers;
+		cout << numOthers << endl;
 		cout << "You are in a game with: " << endl;
 		for (int i = 0; i < numOthers; i++) {
 			string newNick;
@@ -87,11 +88,18 @@ void ClientManager::ReceiveComand(Packet receivedPacket) {
 				cout << newNick << endl;
 			}
 		}
+		
 		break;
 	case ENDGAME:
 	{
 		others.clear();
 		cout << "GAME ENDED" << endl;
+
+		/////////////UPDATE LEVEL////////////////
+		
+		/////////////////////////////
+
+
 		Asker(ASKFINDMATCH);
 	}
 	break;

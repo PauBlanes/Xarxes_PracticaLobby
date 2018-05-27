@@ -15,7 +15,6 @@ DBManager::~DBManager() {
 }
 
 bool DBManager::Register(string user, string password, string email) {
-//bool DBManager::Register(string user, string password) {
 	
 	//Primer buscar si hi ha algun que coincideixi
 	string cmd = "SELECT COUNT(*) FROM Accounts WHERE username=";
@@ -31,7 +30,6 @@ bool DBManager::Register(string user, string password, string email) {
 		
 		cmd.clear();//no tinc clar que calgui fer aix?per?per si de cas
 		cmd = "INSERT into Accounts(username, userpassword, email) VALUES(";
-		//cmd += "'" + user + "'," + "'" + password + "')";		
 		
 		////////////////////////////////////////////////////////////////////////
 		cmd += "'" + user + "'," + "'" + password + "'," + "'" + email + "')";
@@ -107,7 +105,7 @@ bool DBManager::Login(string user, string password, ClientProxy* player) {
 
 void DBManager::AddMatch(int idSession) {
 	
-	string cmd = "UPDATE Sessions SET numGames = numGames+1 WHERE idSession =" + to_string(idSession); //NO RECORDO SI EL NOM DE LA COLUMNA ERA EXACTE numGames
+	string cmd = "UPDATE Sessions SET numGames = numGames+1 WHERE idSession =" + to_string(idSession); 
 	stmt->execute(cmd.c_str());
 }
 void DBManager::CloseSession(ClientProxy p) {

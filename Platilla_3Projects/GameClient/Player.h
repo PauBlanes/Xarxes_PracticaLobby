@@ -7,4 +7,6 @@ class Player {
 public:
 	Player();
 	string nick;
+	//para saber si guanyar la partida o no.
+	bool win;
 };
