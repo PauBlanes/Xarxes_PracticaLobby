@@ -48,7 +48,6 @@ ServerManager::ServerManager() {
 					cout << "Error al recoger conexion nueva\n";
 					delete client;
 				}
-				cout << matches.size() << endl;
 
 			}
 			else
@@ -163,7 +162,6 @@ void ServerManager::ReceiveComand(Packet receivedPacket, int playerIndex) {
 		//Posarlo al array de in queue
 		ClientProxy temp = players_in_lobby[playerIndex];
 		players_in_queue.push_back(temp);
-		cout << players_in_queue.size() << endl;
 		//if (players_in_queue.size() == 2) //aixo pq no els hi trobi match inmediat si ja havia estat contant temps mentre nomes hi havia 1 jugador
 		//	tryMatchClock.restart();
 	}
@@ -199,7 +197,6 @@ void ServerManager::SendComand(COMMANDS cmd, TcpSocket* sock) {
 		int numOther= players_in_lobby.size();
 		for (int i = 0; i < numOther;i++) {
 			packet2Send << cmd << players_in_lobby.size() << players_in_lobby[i].username;
-			cout << players_in_lobby[i].username << endl;
 		}
 	}
 	break;
@@ -226,7 +223,7 @@ void ServerManager::TryFindMatch() {
 	for (int i = 0; i < players_in_queue.size() && !full; i++) {
 		if (i != rnd && abs(players_in_queue[i].skillLevel - possible[0].skillLevel) < 1) {
 			possible.push_back(players_in_queue[i]);
-			players_in_queue.erase(players_in_queue.begin() + 1);
+			players_in_queue.erase(players_in_queue.begin() + i);
 			if (possible.size() >= MAX_PLAYERS)
 				full = true;
 		}

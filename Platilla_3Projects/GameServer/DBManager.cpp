@@ -116,6 +116,6 @@ void DBManager::CloseSession(ClientProxy p) {
 	stmt->execute(cmd.c_str());
 
 	cmd.clear();
-	cmd = "UPDATE Accounts SET level = " + to_string(p.skillLevel) +  "WHERE idAccount =" + to_string(p.accountID); 
+	cmd = "UPDATE Accounts SET level = " + to_string(p.skillLevel) +  " WHERE idAccount =" + to_string(p.accountID); 
 	stmt->execute(cmd.c_str());
 }
