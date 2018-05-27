@@ -10,8 +10,8 @@ DBManager::DBManager() {
 DBManager::~DBManager() {
 	
 	//delete(driver);
-	delete(con);
-	delete(stmt);
+	//delete(con);
+	//delete(stmt);
 }
 
 bool DBManager::Register(string user, string password, string email) {

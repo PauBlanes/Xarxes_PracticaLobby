@@ -31,7 +31,7 @@ public:
 
 	void TryFindMatch(); //Cada X temps intentem fer aquesta funcio si hi ha minim 2 jugadors a la cua
 
-	void MyThread(bool);
+	void MyThread();
 
 	void CreateThread();
 	

@@ -27,9 +27,9 @@ void Game::Update() {
 
 	//Actualitzar temportizador
 	Time currTime = gameClock.getElapsedTime();
-	cout << currTime.asSeconds() << endl;
+	
 	if (currTime.asMilliseconds() > GAME_TIME ) {
-		cout << currTime.asSeconds();
+		
 		//Quan s'ha acabat enviem comando fin i actualitzem base de dades
 		cout << "END OF GAME" << endl;
 		gameEnded = true;//pq el serverManager el pugui treure del array
@@ -38,12 +38,12 @@ void Game::Update() {
 		Packet packet2Send;
 		packet2Send << COMMANDS::ENDGAME;
 		for (int i = 0; i < players.size(); i++) {
-		players[i].skillLevel += 3; //com que no hi ha guanyar/perdre de fet aixo seria com experiencia
-		dbManager.CloseSession(players[i]);
-		do
-		{
-			status = players[i].socket->send(packet2Send);
-		} while (status == sf::Socket::Partial);
+			players[i].skillLevel += 3; //com que no hi ha guanyar/perdre de fet aixo seria com experiencia
+			//dbManager.CloseSession(players[i]);
+			do
+			{
+				status = players[i].socket->send(packet2Send);
+			} while (status == sf::Socket::Partial);
 		}	
 		gameClock.restart();
 	}

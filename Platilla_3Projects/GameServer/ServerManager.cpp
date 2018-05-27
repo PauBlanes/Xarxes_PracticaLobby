@@ -19,7 +19,7 @@ ServerManager::ServerManager() {
 	selector.add(listener);
 	// Endless loop that waits for new connections
 	bool running = true;
-	//this->CreateThread();
+	this->CreateThread();
 	while (running)
 	{
 		// Make the selector wait for data on any socket
@@ -53,24 +53,6 @@ ServerManager::ServerManager() {
 			}
 			else
 			{
-				//Cada X segons intentem fer una partida si hi ha mes de 1 jugador en cua
-				Time currTime = tryMatchClock.getElapsedTime();
-				if (currTime.asMilliseconds() > TRYMATCH_TIME) {
-
-					if (players_in_queue.size() > 1) {
-
-						TryFindMatch();
-					}
-					tryMatchClock.restart();
-				}
-
-				//Actualitzem partides actives
-				for (int i = 0; i < matches.size(); i++) {
-					this->matches[i].Update();
-					if (matches[i].gameEnded) {
-						matches.erase(matches.begin() + i);
-					}
-				}
 				//Ningu s'ha intentat connectar, per tant fem la comunicacio amb els actuals			
 				for (int i = 0; i < players_in_lobby.size(); i++)
 				{
@@ -186,7 +168,7 @@ void ServerManager::ReceiveComand(Packet receivedPacket, int playerIndex) {
 		//	tryMatchClock.restart();
 	}
 		break;
-	case ENDGAME: {
+	/*case ENDGAME: {
 		bool win;
 		receivedPacket >> win;
 		if (win) {
@@ -194,7 +176,7 @@ void ServerManager::ReceiveComand(Packet receivedPacket, int playerIndex) {
 			win = false;
 		}
 	}
-		break;
+		break;*/
 	default:
 		break;
 	}
@@ -238,7 +220,7 @@ void ServerManager::TryFindMatch() {
 	//Triem un jugador aleatori per provar-li de fer match
 	int rnd = rand() % players_in_queue.size();
 	possible.push_back(players_in_queue[rnd]);
-
+	players_in_queue.erase(players_in_queue.begin() + rnd);
 	
 
 	for (int i = 0; i < players_in_queue.size() && !full; i++) {
@@ -260,9 +242,9 @@ void ServerManager::TryFindMatch() {
 	}
 	
 }
-/*
-void ServerManager::MyThread(bool running) {
-	while (running)
+
+void ServerManager::MyThread() {
+	while (true)
 	{
 		//Cada X segons intentem fer una partida si hi ha mes de 1 jugador en cua
 		Time currTime = tryMatchClock.getElapsedTime();
@@ -280,6 +262,8 @@ void ServerManager::MyThread(bool running) {
 			this->matches[i].Update();
 			if (matches[i].gameEnded) {
 				matches.erase(matches.begin() + i);
+				cout << "MATCHES " << matches.size() << endl;
+				cout << "INQUEUE " << players_in_queue.size() << endl;
 			}
 		}	
 	}
@@ -291,4 +275,3 @@ void ServerManager::CreateThread() {
 
 	some_threads.push_back(thread(&ServerManager::MyThread,this));
 }
-*/

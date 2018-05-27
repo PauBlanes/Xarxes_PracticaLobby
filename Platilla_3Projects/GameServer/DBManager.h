@@ -6,7 +6,7 @@
 #include <cppconn\exception.h>
 #include "ClientProxy.h"
 
-#define DB_IP /*"tcp://192.168.123.146:3306"*/"tcp://192.168.0.159:3306"
+#define DB_IP /*"tcp://192.168.123.146:3306"*/"tcp://192.168.1.43:3306"
 #define DB_USER "root"
 #define DB_PSSWRD "1234"
 
